@@ -13,6 +13,7 @@ class UCameraComponent;
 class UMotionControllerComponent;
 class UAnimMontage;
 class USoundBase;
+class UInteractionComponent;
 
 UCLASS(config=Game)
 class AInteractableCharacter : public ACharacter
@@ -24,7 +25,8 @@ class AInteractableCharacter : public ACharacter
 	USkeletalMeshComponent* Mesh1P;
 
 
-	
+	UPROPERTY(VisibleDefaultsOnly, Category=InteractionComponent)
+	UInteractionComponent* InteractionComponent;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -37,12 +39,11 @@ public:
 protected:
 	virtual void BeginPlay();
 
-public:
-
-
+	
 
 protected:
 
+	void Interact();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);

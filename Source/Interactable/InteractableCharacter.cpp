@@ -8,6 +8,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "InteractionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
@@ -21,10 +22,6 @@ AInteractableCharacter::AInteractableCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-
-	// set our turn rates for input
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -41,7 +38,7 @@ AInteractableCharacter::AInteractableCharacter()
 	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 	
-	
+	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>("Interaction Component");
 }
 
 void AInteractableCharacter::BeginPlay()
@@ -51,8 +48,7 @@ void AInteractableCharacter::BeginPlay()
 	
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
+
 
 void AInteractableCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -70,8 +66,14 @@ void AInteractableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+
+	PlayerInputComponent->BindAction("Interact",IE_Pressed,this,&AInteractableCharacter::Interact);
 }
 
+void AInteractableCharacter::Interact()
+{
+	InteractionComponent->Interact();
+}
 
 void AInteractableCharacter::MoveForward(float Value)
 {
